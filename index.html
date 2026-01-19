@@ -5,128 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Test zur deutschen Theorie</title>
 <style>
-  :root{
-    --bg: #f9f9f9;
-    --card: #ffffff;
-    --text: #111;
-    --border: #e0e0e0;
-    --primary: #1f6feb;
-    --correct: #d4edda;
-    --wrong: #f8d7da;
-  }
-
-  body {
-    font-family: Arial, sans-serif;
-    padding: 0;
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-  }
-
-  .container {
-    max-width: 980px;
-    margin: 0 auto;
-    background: var(--card);
-    padding: 18px;
-    border-radius: 14px;
-    box-shadow: 0 0 12px rgba(0,0,0,0.08);
-    margin-top: 14px;
-    margin-bottom: 14px;
-  }
-
-  h1 {
-    text-align: center;
-    margin-bottom: 10px;
-    font-size: 22px;
-  }
-
-  .question {
-    margin-bottom: 18px;
-  }
-
-  .question h2 {
-    font-size: 18px;
-    line-height: 1.4;
-  }
-
+  body { font-family: Arial, sans-serif; padding: 0; margin: 0; background: #f7f7f7; }
+  .container { max-width: 980px; margin: 0 auto; background: #fff; padding: 16px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+  h1 { text-align: center; margin: 12px 0; font-size: 24px; }
+  .question { margin-bottom: 18px; }
   .answers button {
     display: block;
     width: 100%;
     margin: 8px 0;
-    padding: 14px;
-    border: 1px solid var(--border);
+    padding: 12px;
+    border: 1px solid #ddd;
     border-radius: 10px;
     cursor: pointer;
     text-align: left;
-    background: #f1f1f1;
+    background: #f5f5f5;
     font-size: 16px;
-    transition: background 0.2s;
   }
-
-  .answers button:hover {
-    background: #e8e8e8;
-  }
-
-  .feedback {
-    margin-top: 12px;
-    padding: 12px;
-    border-radius: 10px;
-    font-size: 15px;
-    line-height: 1.4;
-  }
-
-  .correct { background: var(--correct); border: 1px solid #c3e6cb; }
-  .wrong { background: var(--wrong); border: 1px solid #f5c6cb; }
-
+  .answers button:hover { background: #e9e9e9; }
+  .feedback { margin-top: 10px; padding: 10px; border-radius: 10px; }
+  .correct { background: #d4edda; border: 1px solid #c3e6cb; }
+  .wrong { background: #f8d7da; border: 1px solid #f5c6cb; }
   .nextBtn {
-    margin-top: 12px;
-    display: none;
-    padding: 12px 18px;
+    margin-top: 10px;
+    padding: 12px 20px;
     border: none;
     border-radius: 10px;
-    background: var(--primary);
+    background: #007bff;
     color: white;
     cursor: pointer;
-    font-size: 16px;
     width: 100%;
-  }
-
-  .nextBtn:hover {
-    background: #0d5ad6;
-  }
-
-  .score {
-    margin-top: 16px;
     font-size: 16px;
-    text-align: center;
   }
-
-  .footer {
-    margin-top: 14px;
-    font-size: 13px;
-    color: #555;
-    text-align: center;
-  }
-
-  @media (max-width: 520px) {
-    .container {
-      padding: 14px;
-      border-radius: 12px;
-    }
-    h1 {
-      font-size: 20px;
-    }
-    .question h2 {
-      font-size: 17px;
-    }
-    .answers button {
-      padding: 16px;
-      font-size: 15px;
-    }
-    .nextBtn {
-      padding: 14px;
-      font-size: 15px;
-    }
+  .nextBtn:hover { background: #0056b3; }
+  .score { margin-top: 18px; font-size: 18px; text-align: center; }
+  .footer { margin-top: 14px; font-size: 14px; color: #555; text-align: center; padding-bottom: 10px; }
+  @media (max-width: 600px) {
+    h1 { font-size: 20px; }
+    .answers button { font-size: 15px; padding: 14px; }
+    .nextBtn { font-size: 15px; padding: 14px; }
   }
 </style>
 </head>
@@ -143,86 +59,86 @@ const quiz = document.getElementById('quiz');
 const scoreDiv = document.getElementById('score');
 
 const questions = [
-  {"q":"1. An wie viele Länder grenzt die Bundesrepublik Deutschland?","a":["An 9 Länder","An 7 Länder","An 12 Länder"],"correct":0,"explanation":"Deutschland grenzt an 9 Staaten: D, DK, PL, CZ, A, CH, FR, LU, BE, NL."},
-  {"q":"2. Welche Staaten gehören nicht zu den Nachbarländern Deutschlands?","a":["Spanien und Italien","Polen und Österreich","Frankreich und Luxemburg"],"correct":0,"explanation":"Spanien und Italien grenzen nicht an Deutschland."},
-  {"q":"3. Wie heißt die Hauptstadt Deutschlands?","a":["Berlin","München","Frankfurt am Main"],"correct":0,"explanation":"Berlin ist die Hauptstadt Deutschlands."},
-  {"q":"4. Wie viele Bundesländer hat die BRD?","a":["16","10","20"],"correct":0,"explanation":"Deutschland ist in 16 Bundesländer gegliedert."},
-  {"q":"5. Welche Aussage zur territorialen Gliederung ist richtig?","a":["Deutschland ist ein Bundesstaat mit 16 Bundesländern","Deutschland ist ein zentralistischer Staat ohne Bundesländer","Deutschland hat nur 8 Bundesländer"],"correct":0,"explanation":"Deutschland ist ein Bundesstaat mit 16 Bundesländern."},
-  {"q":"6. Welche Flüsse gehören zu den wichtigsten in Deutschland?","a":["Rhein, Elbe, Donau","Seine, Tiber, Thames","Wolga, Nil, Amazonas"],"correct":0,"explanation":"Rhein, Elbe und Donau sind die wichtigsten deutschen Flüsse."},
-  {"q":"7. Welcher Berg ist der höchste in Deutschland?","a":["Zugspitze","Brocken","Feldberg"],"correct":0,"explanation":"Die Zugspitze ist mit 2962 m der höchste Berg Deutschlands."},
-  {"q":"8. Welche Landschaftsform findet man im Norden Deutschlands?","a":["Norddeutsches Tiefland","Alpen","Schwarzwald"],"correct":0,"explanation":"Im Norden liegt das Norddeutsche Tiefland."},
-  {"q":"9. Wo liegen die Mittelgebirge in Deutschland?","a":["In der Mitte Deutschlands","Im Norden an der Küste","Im Süden in den Alpen"],"correct":0,"explanation":"Die Mittelgebirge liegen in der Mitte Deutschlands (z.B. Harz, Erzgebirge)."},
-  {"q":"10. Welche Aussage über das Klima in Deutschland ist korrekt?","a":["Gemäßigtes Klima mit Einfluss des Atlantiks","Tropisches Klima mit Monsunzeiten","Wüstenklima mit extremen Temperaturen"],"correct":0,"explanation":"Deutschland hat ein gemäßigtes Klima mit atlantischem Einfluss."},
-  {"q":"11. Was ist typisch für das Klima in Deutschland?","a":["Regelmäßige Niederschläge und mäßige Temperaturen","Sehr heiße Sommer und sehr kalte Winter ohne Niederschlag","Ganzjährig tropische Hitze"],"correct":0,"explanation":"Deutschland hat regelmäßige Niederschläge und mäßige Temperaturen."},
-  {"q":"12. Wann begann die deutsche Geschichte mit dem Mittelalter (ungefähr)?","a":["Im 5.–15. Jahrhundert","Im 18. Jahrhundert","Im 20. Jahrhundert"],"correct":0,"explanation":"Das Mittelalter wird grob vom 5. bis 15. Jahrhundert datiert."},
-  {"q":"13. Was war das Heilige Römische Reich Deutscher Nation?","a":["Ein mittelalterlicher Staat, der große Teile Deutschlands umfasste","Ein Reich in Südamerika","Ein Königreich in Asien"],"correct":0,"explanation":"Das Heilige Römische Reich war ein mittelalterlicher deutscher Staat."},
-  {"q":"14. Was bedeutete die Reformation für Deutschland?","a":["Religiöse Spaltung und politische Veränderungen","Einheitliche Religion in ganz Deutschland","Deutschland wurde kolonialer Großmacht"],"correct":0,"explanation":"Die Reformation führte zur Spaltung und großen politischen Veränderungen."},
-  {"q":"15. Wer war der Begründer des Deutschen Reiches 1871?","a":["Otto von Bismarck","Friedrich II.","Karl der Große"],"correct":0,"explanation":"Otto von Bismarck gilt als Begründer des Deutschen Reiches 1871."},
-  {"q":"16. Wann wurde das Deutsche Kaiserreich gegründet?","a":["1871","1919","1949"],"correct":0,"explanation":"Das Deutsche Kaiserreich wurde 1871 gegründet."},
-  {"q":"17. Was war die Hauptform der Regierung im Kaiserreich?","a":["Monarchie","Republik","Diktatur"],"correct":0,"explanation":"Das Kaiserreich war eine Monarchie unter dem Kaiser."},
-  {"q":"18. Was war der Erste Weltkrieg?","a":["Ein Weltkrieg von 1914–1918","Ein Krieg im 18. Jahrhundert","Ein Konflikt nur in Europa im Jahr 1939"],"correct":0,"explanation":"Der Erste Weltkrieg dauerte von 1914 bis 1918."},
-  {"q":"19. Was führte zum Ende des Kaiserreichs 1918?","a":["Niederlage im Ersten Weltkrieg und Abdankung des Kaisers","Wirtschaftswunder","Wiedervereinigung"],"correct":0,"explanation":"Die Niederlage im Ersten Weltkrieg führte zur Abdankung Wilhelms II. und dem Ende des Kaiserreichs."},
-  {"q":"20. Wann wurde die Weimarer Republik gegründet?","a":["1919","1933","1949"],"correct":0,"explanation":"Die Weimarer Republik wurde 1919 gegründet."},
-  {"q":"21. Wo wurde die Verfassung der Weimarer Republik ausgearbeitet?","a":["In Weimar","In Berlin","In Bonn"],"correct":0,"explanation":"Die Verfassung wurde 1919 in Weimar ausgearbeitet."},
-  {"q":"22. Welche Merkmale hatte die Weimarer Verfassung?","a":["rechtsstaatlich, demokratisch, republikanisch, parlamentarisch, sozial","monarchisch und absolutistisch","kommunistisch und zentralistisch"],"correct":0,"explanation":"Die Verfassung war rechtsstaatlich, demokratisch, republikanisch, parlamentarisch und sozial."},
-  {"q":"23. Wer war der erste Präsident der Weimarer Republik?","a":["Friedrich Ebert","Paul von Hindenburg","Adolf Hitler"],"correct":0,"explanation":"Friedrich Ebert war der erste Präsident."},
-  {"q":"24. Welche politischen Erfolge gab es in den Jahren 1925–1930?","a":["Arbeitslosenversicherung, Achtstundentag, Frauenwahlrecht","Einführung der Diktatur","Auflösung des Parlaments"],"correct":0,"explanation":"Es wurden u.a. Arbeitslosenversicherung, Achtstundentag, Frauenwahlrecht eingeführt."},
-  {"q":"25. Was bedeutet „Republik ohne Republikaner“?","a":["Die Demokratie war schwach und viele lehnten sie ab","Alle Bürger waren stolz auf die Republik","Die Republik hatte keine Hauptstadt"],"correct":0,"explanation":"Viele politische Kräfte lehnten die Republik ab, obwohl sie existierte."},
-  {"q":"26. Was verschärfte die Krise der Weimarer Republik 1929?","a":["Weltwirtschaftskrise","Sieg im Krieg","Wiedervereinigung"],"correct":0,"explanation":"Die Weltwirtschaftskrise 1929 verschärfte die Lage stark."},
-  {"q":"27. Wie viele Arbeitslose gab es 1932 in Deutschland?","a":["6 Millionen","1 Million","10 Millionen"],"correct":0,"explanation":"1932 gab es etwa 6 Millionen Arbeitslose."},
-  {"q":"28. Welche Partei wurde 1932 zur stärksten?","a":["NSDAP","SPD","KPD"],"correct":0,"explanation":"Die NSDAP wurde zur stärksten Partei."},
-  {"q":"29. Wer ernannte 1932 Franz von Papen zum Reichskanzler?","a":["Paul von Hindenburg","Friedrich Ebert","Konrad Adenauer"],"correct":0,"explanation":"Reichspräsident Hindenburg ernannte von Papen."},
-  {"q":"30. Wann endete die Weimarer Republik?","a":["30. Januar 1933","8. Mai 1945","3. Oktober 1990"],"correct":0,"explanation":"Am 30. Januar 1933 kam Hitler an die Macht, damit endete die Weimarer Republik."},
-  {"q":"31. Wie lange existierte das Dritte Reich?","a":["12 Jahre","6 Jahre","20 Jahre"],"correct":0,"explanation":"Das Dritte Reich existierte von 1933 bis 1945 (12 Jahre)."},
+  {"q":"1. An wie viele Länder grenzt Deutschland?","a":["9","7","12"],"correct":0,"explanation":"Deutschland grenzt an 9 Staaten."},
+  {"q":"2. Welche Länder grenzen nicht an Deutschland?","a":["Spanien und Italien","Polen und Österreich","Frankreich und Luxemburg"],"correct":0,"explanation":"Spanien und Italien grenzen nicht an Deutschland."},
+  {"q":"3. Was ist die Hauptstadt Deutschlands?","a":["Berlin","München","Frankfurt"],"correct":0,"explanation":"Berlin ist die Hauptstadt."},
+  {"q":"4. Wie viele Bundesländer hat Deutschland?","a":["16","10","20"],"correct":0,"explanation":"Deutschland hat 16 Bundesländer."},
+  {"q":"5. Welche Aussage ist richtig?","a":["Deutschland ist ein Bundesstaat","Deutschland ist ein zentralistischer Staat","Deutschland hat keine Bundesländer"],"correct":0,"explanation":"Deutschland ist ein Bundesstaat."},
+  {"q":"6. Welche Städte sind Stadtstaaten?","a":["Berlin, Hamburg, Bremen","Berlin, München, Köln","Frankfurt, Stuttgart, Bremen"],"correct":0,"explanation":"Berlin, Hamburg und Bremen sind Stadtstaaten."},
+  {"q":"7. Welche Flüsse sind wichtig in Deutschland?","a":["Rhein, Elbe, Donau","Seine, Tiber, Thames","Nil, Amazonas, Wolga"],"correct":0,"explanation":"Rhein, Elbe und Donau sind wichtige Flüsse."},
+  {"q":"8. Welcher Berg ist der höchste in Deutschland?","a":["Zugspitze","Brocken","Feldberg"],"correct":0,"explanation":"Zugspitze ist mit 2962 m der höchste Berg."},
+  {"q":"9. Welche Landschaft liegt im Norden Deutschlands?","a":["Norddeutsches Tiefland","Alpen","Schwarzwald"],"correct":0,"explanation":"Im Norden liegt das Norddeutsche Tiefland."},
+  {"q":"10. Wo liegen die Mittelgebirge?","a":["In der Mitte Deutschlands","Im Norden","Im Süden"],"correct":0,"explanation":"Die Mittelgebirge liegen in der Mitte (z.B. Harz)."},
+  {"q":"11. Wie ist das Klima in Deutschland?","a":["Gemäßigt mit atlantischem Einfluss","Tropisch","Wüstenklima"],"correct":0,"explanation":"Deutschland hat ein gemäßigtes Klima."},
+  {"q":"12. Wann war das Mittelalter?","a":["5.–15. Jahrhundert","18. Jahrhundert","20. Jahrhundert"],"correct":0,"explanation":"Das Mittelalter war ca. 5.–15. Jh."},
+  {"q":"13. Was war das Heilige Römische Reich?","a":["Ein mittelalterlicher deutscher Staat","Ein Staat in Asien","Ein Königreich in Südamerika"],"correct":0,"explanation":"Ein mittelalterlicher deutscher Staat."},
+  {"q":"14. Was bewirkte die Reformation?","a":["Religiöse Spaltung und politische Veränderung","Einheitliche Religion","Keine Veränderungen"],"correct":0,"explanation":"Die Reformation führte zur Spaltung."},
+  {"q":"15. Wer gründete das Deutsche Reich 1871?","a":["Otto von Bismarck","Friedrich II.","Karl der Große"],"correct":0,"explanation":"Otto von Bismarck gilt als Gründer."},
+  {"q":"16. Wann wurde das Deutsche Kaiserreich gegründet?","a":["1871","1919","1949"],"correct":0,"explanation":"1871 wurde das Kaiserreich gegründet."},
+  {"q":"17. Welche Regierungsform hatte das Kaiserreich?","a":["Monarchie","Republik","Diktatur"],"correct":0,"explanation":"Es war eine Monarchie."},
+  {"q":"18. Wann war der Erste Weltkrieg?","a":["1914–1918","1939–1945","1800–1815"],"correct":0,"explanation":"1914–1918 war der Erste Weltkrieg."},
+  {"q":"19. Warum endete das Kaiserreich 1918?","a":["Niederlage im Ersten Weltkrieg","Wirtschaftswunder","Wiedervereinigung"],"correct":0,"explanation":"Die Niederlage führte zur Abdankung des Kaisers."},
+  {"q":"20. Wann begann die Weimarer Republik?","a":["1919","1933","1949"],"correct":0,"explanation":"1919 wurde die Weimarer Republik gegründet."},
+  {"q":"21. Wo wurde die Weimarer Verfassung beschlossen?","a":["In Weimar","In Berlin","In Bonn"],"correct":0,"explanation":"In Weimar wurde die Verfassung beschlossen."},
+  {"q":"22. Welche Merkmale hatte die Weimarer Verfassung?","a":["Demokratisch, parlamentarisch, sozial","Monarchisch","Diktatorisch"],"correct":0,"explanation":"Sie war demokratisch, parlamentarisch und sozial."},
+  {"q":"23. Wer war erster Präsident der Weimarer Republik?","a":["Friedrich Ebert","Paul von Hindenburg","Adolf Hitler"],"correct":0,"explanation":"Friedrich Ebert war der erste Präsident."},
+  {"q":"24. Welche Reformen gab es 1925–1930?","a":["Frauenwahlrecht, Achtstundentag","Diktatur","Abschaffung des Parlaments"],"correct":0,"explanation":"Es gab u.a. Frauenwahlrecht und Achtstundentag."},
+  {"q":"25. Was bedeutet „Republik ohne Republikaner“?","a":["Viele lehnten die Republik ab","Alle unterstützten sie","Es gab keine Hauptstadt"],"correct":0,"explanation":"Viele lehnten die Republik ab."},
+  {"q":"26. Was verschärfte die Krise 1929?","a":["Weltwirtschaftskrise","Sieg im Krieg","Wiedervereinigung"],"correct":0,"explanation":"Die Weltwirtschaftskrise verschärfte die Krise."},
+  {"q":"27. Wie viele Arbeitslose gab es 1932?","a":["6 Millionen","1 Million","10 Millionen"],"correct":0,"explanation":"1932 gab es ca. 6 Millionen Arbeitslose."},
+  {"q":"28. Welche Partei wurde 1932 stärkste?","a":["NSDAP","SPD","KPD"],"correct":0,"explanation":"Die NSDAP wurde stärkste Partei."},
+  {"q":"29. Wer ernannte Franz von Papen?","a":["Hindenburg","Ebert","Adenauer"],"correct":0,"explanation":"Hindenburg ernannte von Papen."},
+  {"q":"30. Wann endete die Weimarer Republik?","a":["30. Januar 1933","8. Mai 1945","3. Oktober 1990"],"correct":0,"explanation":"1933 kam Hitler an die Macht."},
+  {"q":"31. Wie lange existierte das Dritte Reich?","a":["12 Jahre","6 Jahre","20 Jahre"],"correct":0,"explanation":"1933–1945 = 12 Jahre."},
   {"q":"32. Welche Partei führte Hitler?","a":["NSDAP","SPD","CDU"],"correct":0,"explanation":"Hitler führte die NSDAP."},
-  {"q":"33. Was machte Hitler nach der Machtübernahme mit anderen Parteien?","a":["Er verbot alle anderen Parteien","Er erlaubte alle Parteien","Er gründete neue Parteien"],"correct":0,"explanation":"Hitler verbot alle anderen Parteien."},
-  {"q":"34. Welche Maßnahmen gab es in der Innenpolitik Hitlers?","a":["Abbau der Arbeitslosigkeit, Einführung der Wehrpflicht","Einführung des Frauenwahlrechts","Einführung der Demokratie"],"correct":0,"explanation":"Hitler konnte Arbeitslosigkeit abbauen und führte die allgemeine Wehrpflicht ein."},
-  {"q":"35. Was war Hitlers Ziel in der Außenpolitik?","a":["Herrschaft über Europa durch Krieg","Frieden und Kooperation","Isolation"],"correct":0,"explanation":"Hitler bereitete einen Krieg vor, um Europa zu beherrschen."},
-  {"q":"36. Welche Gebiete wurden 1938 annektiert?","a":["Österreich und das Sudetenland","Schweiz und Dänemark","Polen und Frankreich"],"correct":0,"explanation":"1938 wurden Österreich und das Sudetenland annektiert."},
-  {"q":"37. Was war ein Teil von Hitlers antisemitischem Programm?","a":["Verfolgung und Vernichtung der Juden","Gleichberechtigung","Religionsfreiheit"],"correct":0,"explanation":"Hitler verfolgte und vernichtete seine Gegner und führte antisemitische Politik."},
-  {"q":"38. Was passierte mit Schriftstellern und Wissenschaftlern?","a":["Viele gingen in die Emigration","Alle blieben in Deutschland","Sie wurden Präsidenten"],"correct":0,"explanation":"Viele deutsche Schriftsteller, Künstler und Wissenschaftler emigrierten."},
-  {"q":"39. Wann begann der Zweite Weltkrieg?","a":["1. September 1939","3. Oktober 1990","8. Mai 1945"],"correct":0,"explanation":"Der Zweite Weltkrieg begann am 1. September 1939 mit dem Angriff auf Polen."},
-  {"q":"40. Welche Länder wurden zuerst von den faschistischen Armeen besiegt?","a":["Polen, Dänemark, Norwegen, Holland, Belgien, Frankreich, Jugoslawien, Griechenland","USA, Kanada, Mexiko","Russland, China, Japan"],"correct":0,"explanation":"Diese Länder wurden im Verlauf des Krieges besiegt."},
-  {"q":"41. Wann griffen die Hitlertruppen die Sowjetunion an?","a":["22. Juni 1941","8. Mai 1945","1. Januar 1940"],"correct":0,"explanation":"Am 22. Juni 1941 begann der Angriff auf die Sowjetunion."},
-  {"q":"42. Welche Schlacht gilt als Wendepunkt im Osten?","a":["Stalingrad","Moskau","Wien"],"correct":0,"explanation":"Die Schlacht um Stalingrad gilt als entscheidender Wendepunkt."},
-  {"q":"43. Wann beging Hitler Selbstmord?","a":["30. April 1945","8. Mai 1945","1. Januar 1944"],"correct":0,"explanation":"Hitler beging am 30. April 1945 Selbstmord."},
-  {"q":"44. Wann kapitulierte Deutschland bedingungslos?","a":["8. Mai 1945","3. Oktober 1990","1. September 1939"],"correct":0,"explanation":"Am 8. Mai 1945 kapitulierte Deutschland bedingungslos."},
-  {"q":"45. Was waren die Nürnberger Prozesse?","a":["Verurteilung der Nazi-Führer","Gründung der DDR","Wiedervereinigung Deutschlands"],"correct":0,"explanation":"In den Nürnberger Prozessen wurden die führenden Nazis verurteilt."},
-  {"q":"46. Wie viele Menschen starben im Zweiten Weltkrieg ungefähr?","a":["Fast 60 Millionen","10 Millionen","5 Millionen"],"correct":0,"explanation":"Der Zweite Weltkrieg kostete fast 60 Millionen Menschen das Leben."},
-  {"q":"47. Was war das Ziel der Potsdamer Konferenz 1945?","a":["Deutschland demokratisch und friedlich wieder aufzubauen","Deutschland zu zerstören","Deutschland in ein Königreich zu verwandeln"],"correct":0,"explanation":"Die Siegermächte wollten Deutschland demokratisch und friedlich wieder aufbauen."},
-  {"q":"48. Wie wurde Deutschland nach dem Krieg aufgeteilt?","a":["In vier Besatzungszonen","In zwei Staaten","In drei Regionen"],"correct":0,"explanation":"Deutschland wurde in vier Besatzungszonen geteilt."},
-  {"q":"49. Welche Stadt wurde ebenfalls in vier Sektoren geteilt?","a":["Berlin","Hamburg","München"],"correct":0,"explanation":"Berlin wurde in vier Sektoren geteilt."},
-  {"q":"50. Wann entstand die „Bizone“?","a":["1947","1949","1953"],"correct":0,"explanation":"1947 bildeten USA und Großbritannien die Bizone."},
-  {"q":"51. Wann wurde das Grundgesetz verabschiedet?","a":["23. Mai 1949","3. Oktober 1990","8. Mai 1945"],"correct":0,"explanation":"Das Grundgesetz trat am 23. Mai 1949 in Kraft."},
-  {"q":"52. Wo wurde das Grundgesetz beschlossen?","a":["In Bonn","In Berlin","In Weimar"],"correct":0,"explanation":"Das Grundgesetz wurde vom Parlamentarischen Rat in Bonn beschlossen."},
-  {"q":"53. Wer wurde erster Bundeskanzler der BRD?","a":["Konrad Adenauer","Willy Brandt","Helmut Kohl"],"correct":0,"explanation":"Konrad Adenauer wurde erster Bundeskanzler."},
-  {"q":"54. Wann wurde die DDR gegründet?","a":["7. Oktober 1949","23. Mai 1949","3. Oktober 1990"],"correct":0,"explanation":"Die DDR wurde am 7. Oktober 1949 gegründet."},
-  {"q":"55. Wie war die Gesellschaftsordnung der DDR?","a":["Sozialistischer Staat mit SED","Freie Marktwirtschaft","Monarchie"],"correct":0,"explanation":"Die DDR war ein sozialistischer Staat, in dem die SED das politische Leben bestimmte."},
-  {"q":"56. Was war die SED?","a":["Sozialistische Einheitspartei Deutschlands","Sozialdemokratische Partei Deutschlands","Christlich Demokratische Union"],"correct":0,"explanation":"Die SED war die einzige zugelassene Partei in der DDR."},
-  {"q":"57. Was passierte am 17. Juni 1953 in der DDR?","a":["Volksaufstand","Wiedervereinigung","Mauerbau"],"correct":0,"explanation":"Am 17. Juni 1953 gab es einen Volksaufstand."},
-  {"q":"58. Wann wurde die Berliner Mauer gebaut?","a":["13. August 1961","9. November 1989","3. Oktober 1990"],"correct":0,"explanation":"Die Mauer wurde am 13. August 1961 gebaut."},
-  {"q":"59. Wer war der DDR-Staatschef, der den Mauerbau befahl?","a":["Walter Ulbricht","Egon Krenz","Erich Honecker"],"correct":0,"explanation":"Walter Ulbricht ließ die Mauer bauen."},
-  {"q":"60. Was war der Kalte Krieg?","a":["Konflikt zwischen Osten und Westen ohne direkte militärische Auseinandersetzung","Ein Krieg im 19. Jahrhundert","Ein Wirtschaftskrieg zwischen Deutschland und Frankreich"],"correct":0,"explanation":"Der Kalte Krieg war ein Konflikt zwischen Ost und West ohne direkten Krieg."},
-  {"q":"61. Wann begann die politische Entspannung zwischen DDR und BRD?","a":["1970er Jahre","1950er Jahre","1990er Jahre"],"correct":0,"explanation":"In den 1970er Jahren kam es zur Entspannung (Ostpolitik Willy Brandt)."},
-  {"q":"62. Was war der Grundlagenvertrag 1972?","a":["Vertrag über gutnachbarliche Beziehungen zwischen DDR und BRD","Vertrag zur Gründung der EU","Vertrag zur Währungsreform"],"correct":0,"explanation":"Der Grundlagenvertrag regelte die Beziehungen zwischen DDR und BRD."},
-  {"q":"63. Wer wurde 1969 Bundeskanzler in der BRD?","a":["Willy Brandt","Konrad Adenauer","Helmut Kohl"],"correct":0,"explanation":"Willy Brandt wurde 1969 Bundeskanzler."},
-  {"q":"64. Was löste 1989 den Untergang der DDR aus?","a":["Große Fluchtbewegung der DDR-Bürger","Mauerbau","Gründung der BRD"],"correct":0,"explanation":"1989 begann eine große Fluchtbewegung, die zum Untergang der DDR führte."},
-  {"q":"65. Wann begann der Abriss der Berliner Mauer?","a":["10. November 1989","13. August 1961","3. Oktober 1990"],"correct":0,"explanation":"Am 10. November 1989 begann der Abriss der Mauer."},
-  {"q":"66. Wann wurde die DDR aufgelöst und der Beitritt zur BRD beschlossen?","a":["3. Oktober 1990","23. Mai 1949","7. Oktober 1949"],"correct":0,"explanation":"Die DDR trat am 3. Oktober 1990 der BRD bei."},
-  {"q":"67. Was ist das Grundgesetz?","a":["Die rechtliche und politische Grundordnung der BRD","Ein deutsches Volkslied","Ein Wirtschaftsgesetz"],"correct":0,"explanation":"Das Grundgesetz ist die Grundordnung der BRD."},
-  {"q":"68. Welcher Artikel im Grundgesetz ist besonders wichtig?","a":["Artikel 1 (Menschenwürde)","Artikel 10 (Steuern)","Artikel 20 (Sport)"],"correct":0,"explanation":"Artikel 1 postuliert die Unantastbarkeit der Menschenwürde."},
-  {"q":"69. Welche Grundrechte sind im Grundgesetz verankert?","a":["Gleichberechtigung, Glaubensfreiheit, Meinungsfreiheit, Schutz der Familie","Nur Steuergesetze","Nur Wirtschaftsregeln"],"correct":0,"explanation":"Das GG enthält u.a. Gleichberechtigung, Glaubensfreiheit, Meinungsfreiheit und Schutz der Familie."},
-  {"q":"70. Was bedeutet „Ewigkeitscharakter“ des Grundgesetzes?","a":["Bestimmte Grundsätze dürfen nicht geändert werden","Das Grundgesetz kann jederzeit aufgehoben werden","Es gilt nur für 10 Jahre"],"correct":0,"explanation":"Bestimmte Prinzipien (Grundrechte, Demokratie, Bundesstaat, Sozialstaat) sind unveränderlich."},
-  {"q":"71. Welche Staatsformen beschreibt das Grundgesetz?","a":["Rechtsstaat, Bundesstaat, Sozialstaat","Monarchie, Zentralstaat, Diktatur","Königreich, Protektorat, Kolonie"],"correct":0,"explanation":"Das GG definiert Deutschland als Rechtsstaat, Bundesstaat und Sozialstaat."},
-  {"q":"72. Wie funktioniert das Wahlrecht in Deutschland?","a":["Personalisierte Verhältniswahl mit 2 Stimmen","Nur Mehrheitswahl","Nur Losverfahren"],"correct":0,"explanation":"Deutschland wählt nach personalisierter Verhältniswahl mit Erst- und Zweitstimme."},
-  {"q":"73. Wer ist wahlberechtigt?","a":["Alle Staatsbürger ab 18 Jahren","Nur Männer ab 21","Nur Beamte"],"correct":0,"explanation":"Wahlberechtigt sind alle deutschen Staatsbürger ab 18 Jahren."},
-  {"q":"74. Was entscheidet über die Anzahl der Mandate im Bundestag?","a":["Die Zweitstimmen","Die Erststimmen","Das Alter der Wähler"],"correct":0,"explanation":"Die Zweitstimmen bestimmen die Mandatsverteilung."},
-  {"q":"75. Welche Hürde müssen Parteien im Bundestag überwinden?","a":["5-Prozent-Hürde","10-Prozent-Hürde","Keine Hürde"],"correct":0,"explanation":"Nur Parteien über 5 % der Zweitstimmen erhalten Mandate."},
-  {"q":"76. Was ist die Aufgabe der politischen Parteien laut Grundgesetz?","a":["Mitwirkung an der politischen Willensbildung des Volkes","Nur Spenden sammeln","Keine Aufgaben"],"correct":0,"explanation":"Parteien wirken an der politischen Willensbildung mit."},
-  {"q":"77. Welche Parteien sind in Deutschland wichtig?","a":["CDU/CSU, SPD, Die Grünen, Die Linke","Nur die SPD","Nur die NSDAP"],"correct":0,"explanation":"Wichtige Parteien sind u.a. CDU/CSU, SPD, Die Grünen, Die Linke."},
-  {"q":"78. Was sind Staatssymbole der BRD?","a":["Flagge, Wappen, Hymne","Nur die Flagge","Nur das Wappen"],"correct":0,"explanation":"Staatssymbole sind Flagge, Wappen und Hymne."},
-  {"q":"79. Welche Farben hat die deutsche Flagge?","a":["Schwarz-Rot-Gold","Rot-Weiß-Blau","Grün-Weiß-Rot"],"correct":0,"explanation":"Die Flagge besteht aus Schwarz, Rot und Gold."},
-  {"q":"80. Welche Hymne hat die BRD?","a":["3. Strophe des „Liedes der Deutschen“","„Ode an die Freude“","„Deutschlandlied“ ohne Strophe"],"correct":0,"explanation":"Die Nationalhymne ist die 3. Strophe des „Liedes der Deutschen“."}
+  {"q":"33. Was machte Hitler mit anderen Parteien?","a":["Verbot alle anderen Parteien","Er erlaubte alle","Er gründete neue"],"correct":0,"explanation":"Er verbot alle anderen Parteien."},
+  {"q":"34. Welche Innenpolitik gab es bei Hitler?","a":["Arbeitslosigkeit senken, Wehrpflicht","Frauenwahlrecht","Demokratie stärken"],"correct":0,"explanation":"Arbeitslosigkeit wurde reduziert und Wehrpflicht eingeführt."},
+  {"q":"35. Was war Hitlers Außenpolitik?","a":["Herrschaft über Europa","Frieden","Isolation"],"correct":0,"explanation":"Ziel war Herrschaft durch Krieg."},
+  {"q":"36. Welche Gebiete wurden 1938 annektiert?","a":["Österreich und Sudetenland","Schweiz und Dänemark","Polen und Frankreich"],"correct":0,"explanation":"Österreich und Sudetenland wurden annektiert."},
+  {"q":"37. Was war Teil von Hitlers antisemitischem Programm?","a":["Verfolgung und Vernichtung","Gleichberechtigung","Religionsfreiheit"],"correct":0,"explanation":"Verfolgung und Vernichtung waren Teil davon."},
+  {"q":"38. Was passierte mit Schriftstellern und Wissenschaftlern?","a":["Viele emigrierten","Alle blieben","Sie wurden Präsidenten"],"correct":0,"explanation":"Viele emigrierten."},
+  {"q":"39. Wann begann der Zweite Weltkrieg?","a":["1. September 1939","3. Oktober 1990","8. Mai 1945"],"correct":0,"explanation":"Der Krieg begann 1939 mit Polen."},
+  {"q":"40. Welche Länder wurden zuerst besiegt?","a":["Polen, Dänemark, Norwegen, Holland, Belgien, Frankreich","USA, Kanada, Mexiko","Russland, China, Japan"],"correct":0,"explanation":"Diese Länder wurden zuerst besiegt."},
+  {"q":"41. Wann griff Deutschland die Sowjetunion an?","a":["22. Juni 1941","8. Mai 1945","1. Januar 1940"],"correct":0,"explanation":"22. Juni 1941 war der Angriff."},
+  {"q":"42. Welche Schlacht war Wendepunkt im Osten?","a":["Stalingrad","Moskau","Wien"],"correct":0,"explanation":"Stalingrad war der Wendepunkt."},
+  {"q":"43. Wann beging Hitler Selbstmord?","a":["30. April 1945","8. Mai 1945","1. Januar 1944"],"correct":0,"explanation":"30. April 1945."},
+  {"q":"44. Wann kapitulierte Deutschland?","a":["8. Mai 1945","3. Oktober 1990","1. September 1939"],"correct":0,"explanation":"8. Mai 1945 bedingungslose Kapitulation."},
+  {"q":"45. Was waren die Nürnberger Prozesse?","a":["Verurteilung der Nazi-Führer","Gründung der DDR","Wiedervereinigung"],"correct":0,"explanation":"Nazi-Führer wurden verurteilt."},
+  {"q":"46. Wie viele starben im Zweiten Weltkrieg?","a":["~60 Millionen","10 Millionen","5 Millionen"],"correct":0,"explanation":"Fast 60 Millionen Menschen starben."},
+  {"q":"47. Ziel der Potsdamer Konferenz?","a":["Deutschland demokratisch aufbauen","Deutschland zerstören","Königreich gründen"],"correct":0,"explanation":"Demokratischer und friedlicher Aufbau."},
+  {"q":"48. Wie wurde Deutschland nach dem Krieg geteilt?","a":["In vier Besatzungszonen","In zwei Staaten","In drei Regionen"],"correct":0,"explanation":"Deutschland wurde in vier Zonen geteilt."},
+  {"q":"49. Welche Stadt wurde auch geteilt?","a":["Berlin","Hamburg","München"],"correct":0,"explanation":"Berlin wurde in vier Sektoren geteilt."},
+  {"q":"50. Wann entstand die Bizone?","a":["1947","1949","1953"],"correct":0,"explanation":"1947 bildeten USA und UK die Bizone."},
+  {"q":"51. Wann wurde das Grundgesetz verabschiedet?","a":["23. Mai 1949","3. Oktober 1990","8. Mai 1945"],"correct":0,"explanation":"23. Mai 1949."},
+  {"q":"52. Wo wurde das Grundgesetz beschlossen?","a":["Bonn","Berlin","Weimar"],"correct":0,"explanation":"Es wurde in Bonn beschlossen."},
+  {"q":"53. Wer war erster Bundeskanzler?","a":["Konrad Adenauer","Willy Brandt","Helmut Kohl"],"correct":0,"explanation":"Konrad Adenauer war erster Kanzler."},
+  {"q":"54. Wann wurde die DDR gegründet?","a":["7. Oktober 1949","23. Mai 1949","3. Oktober 1990"],"correct":0,"explanation":"7. Oktober 1949."},
+  {"q":"55. Welche Gesellschaftsordnung hatte die DDR?","a":["Sozialistischer Staat","Freie Marktwirtschaft","Monarchie"],"correct":0,"explanation":"Sozialistischer Staat mit SED."},
+  {"q":"56. Was ist die SED?","a":["Sozialistische Einheitspartei Deutschlands","SPD","CDU"],"correct":0,"explanation":"Die SED war die Staatspartei."},
+  {"q":"57. Was geschah am 17. Juni 1953?","a":["Volksaufstand","Mauerbau","Wiedervereinigung"],"correct":0,"explanation":"Es gab einen Volksaufstand."},
+  {"q":"58. Wann wurde die Berliner Mauer gebaut?","a":["13. August 1961","9. November 1989","3. Oktober 1990"],"correct":0,"explanation":"13. August 1961."},
+  {"q":"59. Wer befahl den Mauerbau?","a":["Walter Ulbricht","Egon Krenz","Erich Honecker"],"correct":0,"explanation":"Walter Ulbricht befahl den Bau."},
+  {"q":"60. Was ist der Kalte Krieg?","a":["Konflikt zwischen Ost und West ohne direkten Krieg","Krieg im 19. Jahrhundert","Wirtschaftskrieg zwischen Deutschland und Frankreich"],"correct":0,"explanation":"Konflikt ohne direkte militärische Auseinandersetzung."},
+  {"q":"61. Wann begann die Entspannung zwischen DDR und BRD?","a":["1970er Jahre","1950er Jahre","1990er Jahre"],"correct":0,"explanation":"In den 1970er Jahren begann die Ostpolitik."},
+  {"q":"62. Was war der Grundlagenvertrag 1972?","a":["Vertrag über Beziehungen DDR-BRD","Vertrag zur EU","Währungsreform"],"correct":0,"explanation":"Regelte Beziehungen zwischen DDR und BRD."},
+  {"q":"63. Wer wurde 1969 Bundeskanzler?","a":["Willy Brandt","Konrad Adenauer","Helmut Kohl"],"correct":0,"explanation":"Willy Brandt wurde Kanzler."},
+  {"q":"64. Was löste 1989 den Untergang der DDR aus?","a":["Fluchtbewegung","Mauerbau","Gründung der BRD"],"correct":0,"explanation":"Große Fluchtbewegung 1989."},
+  {"q":"65. Wann begann der Abriss der Mauer?","a":["10. November 1989","13. August 1961","3. Oktober 1990"],"correct":0,"explanation":"10. November 1989."},
+  {"q":"66. Wann wurde die DDR aufgelöst?","a":["3. Oktober 1990","23. Mai 1949","7. Oktober 1949"],"correct":0,"explanation":"3. Oktober 1990."},
+  {"q":"67. Was ist das Grundgesetz?","a":["Grundordnung Deutschlands","Ein deutsches Lied","Ein Gesetz über Steuern"],"correct":0,"explanation":"Es ist die Grundordnung der BRD."},
+  {"q":"68. Welcher Artikel ist besonders wichtig?","a":["Artikel 1 (Menschenwürde)","Artikel 10 (Steuern)","Artikel 20 (Sport)"],"correct":0,"explanation":"Artikel 1: Menschenwürde ist unantastbar."},
+  {"q":"69. Welche Grundrechte gibt es?","a":["Meinungsfreiheit, Glaubensfreiheit, Gleichberechtigung","Nur Steuern","Nur Wirtschaftsregeln"],"correct":0,"explanation":"Grundrechte umfassen u.a. Meinungsfreiheit, Gleichberechtigung."},
+  {"q":"70. Was bedeutet „Ewigkeitscharakter“?","a":["Bestimmte Grundsätze sind unveränderlich","GG kann jederzeit aufgehoben werden","Gilt nur 10 Jahre"],"correct":0,"explanation":"Bestimmte Grundsätze dürfen nicht geändert werden."},
+  {"q":"71. Welche Staatsformen beschreibt das GG?","a":["Rechtsstaat, Bundesstaat, Sozialstaat","Monarchie, Zentralstaat, Diktatur","Königreich"],"correct":0,"explanation":"GG definiert Rechtsstaat, Bundesstaat, Sozialstaat."},
+  {"q":"72. Wie funktioniert das Wahlrecht?","a":["Personalisierte Verhältniswahl (2 Stimmen)","Nur Mehrheitswahl","Losverfahren"],"correct":0,"explanation":"Deutschland hat personalisierte Verhältniswahl mit Erst- und Zweitstimme."},
+  {"q":"73. Wer darf wählen?","a":["Deutsche ab 18","Nur Männer ab 21","Nur Beamte"],"correct":0,"explanation":"Alle deutschen Staatsbürger ab 18."},
+  {"q":"74. Was entscheidet über Mandate im Bundestag?","a":["Zweitstimmen","Erststimmen","Alter der Wähler"],"correct":0,"explanation":"Zweitstimmen bestimmen Mandate."},
+  {"q":"75. Welche Hürde gibt es?","a":["5%-Hürde","10%-Hürde","Keine Hürde"],"correct":0,"explanation":"Parteien brauchen mindestens 5% der Zweitstimmen."},
+  {"q":"76. Aufgabe der Parteien laut GG?","a":["Mitwirkung an politischer Willensbildung","Nur Spenden sammeln","Keine Aufgabe"],"correct":0,"explanation":"Parteien wirken an der Willensbildung mit."},
+  {"q":"77. Welche Parteien sind wichtig?","a":["CDU/CSU, SPD, Grüne, Linke","Nur SPD","Nur NSDAP"],"correct":0,"explanation":"Wichtige Parteien sind z.B. CDU/CSU, SPD, Grüne, Linke."},
+  {"q":"78. Welche Staatssymbole gibt es?","a":["Flagge, Wappen, Hymne","Nur Flagge","Nur Wappen"],"correct":0,"explanation":"Flagge, Wappen und Hymne sind Staatssymbole."},
+  {"q":"79. Welche Farben hat die Flagge?","a":["Schwarz-Rot-Gold","Rot-Weiß-Blau","Grün-Weiß-Rot"],"correct":0,"explanation":"Schwarz-Rot-Gold."},
+  {"q":"80. Welche Hymne hat Deutschland?","a":["3. Strophe des „Liedes der Deutschen“","„Ode an die Freude“","„Deutschlandlied“ ohne Strophe"],"correct":0,"explanation":"Die 3. Strophe des „Liedes der Deutschen“."}
 ];
 
 let current = 0;

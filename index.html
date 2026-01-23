@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sociolinguistics Test</title>
+<style>
+    body { font-family: Arial, sans-serif; background: #f7f7f7; color: #222; margin: 0; padding: 0; }
+    .container { max-width: 900px; margin: 30px auto; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
+    h1 { text-align: center; margin-bottom: 10px; }
+    .progress { height: 18px; background: #e0e0e0; border-radius: 9px; overflow: hidden; margin: 15px 0; }
+    .progress-bar { height: 100%; width: 0; background: #4caf50; transition: width .4s; }
+    .stats { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
+    .question { font-size: 18px; margin-bottom: 12px; }
+    .answers { list-style: none; padding: 0; }
+    .answers li { margin: 8px 0; }
+    .btn { display: inline-block; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+    .btn-next { background: #1976d2; color: #fff; }
+    .btn-next:disabled { background: #9e9e9e; cursor: not-allowed; }
+    .option { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; cursor: pointer; background: #f9f9f9; }
+    .option:hover { background: #eef; }
+    .correct { background: #d4edda; border-color: #c3e6cb; }
+    .wrong { background: #f8d7da; border-color: #f5c6cb; }
+    .explanation { margin-top: 12px; padding: 12px; border-radius: 10px; background: #f1f1f1; }
+    .input { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ddd; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Sociolinguistics Test</h1>
+
+    <div class="stats">
+        <div>Answered: <span id="answered">0</span>/<span id="total">85</span></div>
+        <div>Correct: <span id="correct">0</span></div>
+    </div>
+
+    <div class="progress">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+
+    <div id="quiz">
+        <div class="question" id="question"></div>
+        <ul class="answers" id="answers"></ul>
+
+        <div id="fillArea" style="display:none;">
+            <input type="text" id="fillInput" class="input" placeholder="Type your answer here...">
+            <button class="btn btn-next" id="fillCheck">Check</button>
+        </div>
+
+        <div class="explanation" id="explanation"></div>
+        <button class="btn btn-next" id="nextBtn" disabled>Next Question</button>
+    </div>
+</div>
+
+<script>
+const questions = [
+    {q: "What is sociolinguistics primarily concerned with?", type: "mc", opts: ["Grammar rules", "Language as a social phenomenon", "Phonetics only", "Word formation"], a: 1,
+     expl: "Sociolinguistics studies language as a social phenomenon: how society influences language and how language reflects social structure."},
+
+    {q: "Which term refers to a regional or social variety of a language?", type: "mc", opts: ["Dialect", "Idiom", "Register", "Creole"], a: 0,
+     expl: "A dialect is a regional or social variety of a language differing in pronunciation, vocabulary, and sometimes grammar."},
+
+    {q: "What is a standard language?", type: "mc", opts: ["Any spoken variety", "A codified socially accepted variety", "A slang", "A pidgin"], a: 1,
+     expl: "A standard language is codified and used in education, government, media, and formal communication."},
+
+    {q: "Which of these is NOT a function of a standard language?", type: "mc", opts: ["Used in official communication", "Has fixed norms", "Automatically superior to all dialects", "Taught in schools"], a: 2,
+     expl: "Standard language is not linguistically superior; it has higher social prestige but is not inherently better than dialects."},
+
+    {q: "What is a national language?", type: "mc", opts: ["A language spoken by a nation’s elite only", "A language representing national identity", "A dialect", "A slang"], a: 1,
+     expl: "A national language represents unity and cultural identity and often has official status."},
+
+    {q: "What does 'lingua franca' mean?", type: "mc", opts: ["A native language", "A language used for communication between speakers of different native languages", "A dialect", "A formal register"], a: 1,
+     expl: "A lingua franca is a common language chosen for practical communication between speakers with different native languages."},
+
+    {q: "What is a contact language?", type: "mc", opts: ["A language used only in schools", "A language formed in situations of language contact", "A national language", "A formal register"], a: 1,
+     expl: "Contact languages develop where speakers of different languages interact regularly, leading to mutual influence."},
+
+    {q: "Which of these is an example of a contact language?", type: "mc", opts: ["Standard British English", "Jamaican Creole", "Academic English", "Formal register"], a: 1,
+     expl: "Jamaican Creole is an English-based contact language formed through contact between English and local languages."},
+
+    {q: "What is the relationship between language and culture?", type: "mc", opts: ["Language is unrelated to culture", "Language reflects and transmits culture", "Culture is only written, not spoken", "Language is purely biological"], a: 1,
+     expl: "Language expresses and transmits cultural values, beliefs, and norms and shapes how people think and interact."},
+
+    {q: "Which example shows culture in language?", type: "mc", opts: ["Using grammar rules", "Using polite forms like 'please' and 'thank you'", "Only using slang", "Only writing"], a: 1,
+     expl: "Polite forms reflect cultural values of politeness, respect, and social norms."},
+
+    {q: "What does 'language as a cultural code' mean?", type: "mc", opts: ["Language is only for communication", "Language is learned and shared like traditions", "Language is fixed and never changes", "Language has no social meaning"], a: 1,
+     expl: "Language is shared, learned, and passed down like cultural customs, and it helps members understand each other."},
+
+    {q: "What are idioms an example of?", type: "mc", opts: ["Grammar rules", "Cultural values and shared experiences", "Only vocabulary", "Phonetics"], a: 1,
+     expl: "Idioms reveal shared cultural experiences and values, like 'time is money' reflecting emphasis on efficiency."},
+
+    {q: "How does religion influence language?", type: "mc", opts: ["By removing vocabulary", "By shaping special vocabularies and preserving older forms", "By making language simpler", "By eliminating dialects"], a: 1,
+     expl: "Religion influences language through religious vocabulary, formulas, and preservation of older forms in texts and rituals."},
+
+    {q: "Which phrase comes from the Bible?", type: "mc", opts: ["Time is money", "Forbidden fruit", "Hello world", "Break a leg"], a: 1,
+     expl: "'Forbidden fruit' is a biblical expression that is widely used even outside religious contexts."},
+
+    {q: "How does language relate to ethnicity?", type: "mc", opts: ["It has no relation", "It serves as a marker of group identity", "It only depends on geography", "It only depends on age"], a: 1,
+     expl: "Language signals group membership and identity through accent, dialect, and word choice."},
+
+    {q: "What is an example of a language used as identity marker?", type: "mc", opts: ["Standard English", "African American Vernacular English", "Only formal speech", "Only written language"], a: 1,
+     expl: "AAVE is used not only for communication but also to express solidarity and cultural identity."},
+
+    {q: "What are social stereotypes about language?", type: "mc", opts: ["Neutral facts", "Judgments associating language with social traits", "Only grammar rules", "Only phonetics"], a: 1,
+     expl: "Stereotypes link speech styles to assumptions about education, intelligence, class, etc., often leading to prejudice."},
+
+    {q: "Why are stereotypes harmful?", type: "mc", opts: ["They help people understand language", "They lead to discrimination and inequality", "They improve dialects", "They only affect grammar"], a: 1,
+     expl: "Stereotypes create unfair judgments about speakers and can lead to discrimination."},
+
+    {q: "How is language connected to power?", type: "mc", opts: ["Power has no relation to language", "Power controls language norms and prestige", "Language controls physical strength", "Power only affects phonetics"], a: 1,
+     expl: "Those in power often impose language norms, giving advantage to standard speakers and marginalizing others."},
+
+    {q: "What is an example of power in discourse?", type: "mc", opts: ["Political rhetoric framing events", "Random slang", "Only poetry", "Only grammar textbooks"], a: 0,
+     expl: "Political discourse uses specific vocabulary and metaphors to influence public opinion and legitimize decisions."},
+
+    {q: "What does 'language as a legal source' mean?", type: "mc", opts: ["Laws exist without language", "Laws exist through linguistic formulations", "Language is irrelevant to law", "Only oral laws exist"], a: 1,
+     expl: "Legal systems rely on precise language; laws become binding through official written formulation."},
+
+    {q: "Why is wording important in law?", type: "mc", opts: ["It doesn’t matter", "Small differences affect interpretation", "Only the idea matters", "Only oral statements matter"], a: 1,
+     expl: "Even small wording changes can alter legal interpretation and outcomes."},
+
+    {q: "What is language planning?", type: "mc", opts: ["Random language change", "Deliberate government regulation of language", "Only dialect development", "Only slang creation"], a: 1,
+     expl: "Language planning involves deliberate decisions about official languages, norms, and preservation."},
+
+    {q: "Which is an example of language planning?", type: "mc", opts: ["Bilingual education policy", "Random slang", "Only online language", "Only regional accents"], a: 0,
+     expl: "Bilingual education and official language decisions are part of language planning."},
+
+    {q: "What are corpus planning and status planning?", type: "mc", opts: ["Types of dialects", "Types of language planning", "Types of slang", "Types of phonetic changes"], a: 1,
+     expl: "Corpus planning deals with dictionaries and grammar; status planning deals with official use and prestige."},
+
+    {q: "How do languages develop?", type: "mc", opts: ["They stay fixed", "They evolve due to social, historical, and cultural changes", "Only due to writing", "Only due to education"], a: 1,
+     expl: "Languages change naturally due to migration, contact, technological progress, and social factors."},
+
+    {q: "What causes borrowing in languages?", type: "mc", opts: ["Isolation", "Contact with other languages", "Only writing", "Only grammar teaching"], a: 1,
+     expl: "Language contact leads to borrowing of words, sounds, and grammar."},
+
+    {q: "Which factor often introduces new expressions?", type: "mc", opts: ["Only old people", "Young people and online communication", "Only textbooks", "Only official institutions"], a: 1,
+     expl: "Young people, urban communities, and online communication often create and spread new expressions."},
+
+    {q: "What is a dialect feature?", type: "mc", opts: ["Universal grammar", "Regional pronunciation differences", "Only formal speech", "Only written rules"], a: 1,
+     expl: "Dialects show pronunciation, vocabulary, and sometimes grammar differences due to region or social group."},
+
+    {q: "Which is a social dialect?", type: "mc", opts: ["A dialect based on social class", "A dialect based only on geography", "A dialect only in schools", "A dialect only in writing"], a: 0,
+     expl: "Social dialects vary based on social stratification, such as class, education, or profession."},
+
+    {q: "What is an example of a regional dialect?", type: "mc", opts: ["Standard British English", "Cockney", "Academic English", "Formal register"], a: 1,
+     expl: "Cockney is a regional dialect spoken in London with unique pronunciation and vocabulary."},
+
+    {q: "What is register in sociolinguistics?", type: "mc", opts: ["A dialect", "A style of language used in a particular context", "A language family", "A slang dictionary"], a: 1,
+     expl: "Register refers to language variation based on context, such as formal vs informal speech."},
+
+    {q: "Which is an example of formal register?", type: "mc", opts: ["Talking with friends", "Academic writing", "Slang chat", "Texting"], a: 1,
+     expl: "Academic writing uses formal register with precise vocabulary and grammar."},
+
+    {q: "Which is an example of informal register?", type: "mc", opts: ["Scientific article", "Texting with friends", "Legal document", "Government speech"], a: 1,
+     expl: "Informal register includes casual speech, slang, and relaxed grammar."},
+
+    {q: "What is code-switching?", type: "mc", opts: ["Changing dialects within one language", "Switching between languages in conversation", "Only writing", "Only formal speech"], a: 1,
+     expl: "Code-switching is alternating between languages or varieties within a conversation."},
+
+    {q: "Why do people code-switch?", type: "mc", opts: ["To show identity or fit context", "Because they forget words", "Only in writing", "Only in schools"], a: 0,
+     expl: "Code-switching reflects identity, context, solidarity, or social norms."},
+
+    {q: "What is diglossia?", type: "mc", opts: ["One language only", "Two varieties used for different functions", "A dialect only", "A slang"], a: 1,
+     expl: "Diglossia is when a 'high' and 'low' variety are used in different social contexts."},
+
+    {q: "What is a 'high' variety in diglossia?", type: "mc", opts: ["Informal speech", "Formal, prestigious variety", "Only slang", "Only writing"], a: 1,
+     expl: "The high variety is formal and used in education, government, and media."},
+
+    {q: "What is a 'low' variety in diglossia?", type: "mc", opts: ["Formal speech", "Everyday informal speech", "Only written language", "Only official documents"], a: 1,
+     expl: "The low variety is informal and used in everyday conversation."},
+
+    {q: "What is language prestige?", type: "mc", opts: ["A language’s sound quality", "Social value attached to a language or variety", "Only grammar correctness", "Only vocabulary size"], a: 1,
+     expl: "Prestige is social status given to certain language varieties, often based on power and education."},
+
+    {q: "What is linguistic discrimination?", type: "mc", opts: ["Learning languages", "Unfair treatment based on language", "Language teaching", "Only grammar tests"], a: 1,
+     expl: "Linguistic discrimination is judging or treating people unfairly based on their language or accent."},
+
+    {q: "What is a lingua franca example?", type: "mc", opts: ["English in international business", "Only national language", "Only dialect", "Only formal register"], a: 0,
+     expl: "English is used globally as a lingua franca in business, science, and diplomacy."},
+
+    {q: "What is language ideology?", type: "mc", opts: ["A belief about language and its social role", "A type of dialect", "A grammar rule", "A phonetic rule"], a: 0,
+     expl: "Language ideology is beliefs and attitudes about language and its value or role in society."},
+
+    {q: "What is language shift?", type: "mc", opts: ["Learning a new language", "Community switching from one language to another", "Only code-switching", "Only dialect change"], a: 1,
+     expl: "Language shift occurs when a community gradually replaces its language with another."},
+
+    {q: "What is language maintenance?", type: "mc", opts: ["Keeping a language alive in a community", "Replacing a language", "Only learning new vocabulary", "Only writing rules"], a: 0,
+     expl: "Language maintenance is efforts to preserve a language within a community."},
+
+    {q: "What is bilingualism?", type: "mc", opts: ["Knowing two languages", "Knowing one language", "Only speaking dialects", "Only reading"], a: 0,
+     expl: "Bilingualism is the ability to use two languages."},
+
+    {q: "What is multilingualism?", type: "mc", opts: ["Knowing multiple languages", "Knowing only one language", "Only dialects", "Only slang"], a: 0,
+     expl: "Multilingualism is the use of more than two languages in a community or by an individual."},
+
+    {q: "What is language ecology?", type: "mc", opts: ["Study of language in its environment", "Only grammar study", "Only phonetics", "Only vocabulary"], a: 0,
+     expl: "Language ecology studies how languages interact with their social, cultural, and physical environment."},
+
+    {q: "What is a pidgin?", type: "mc", opts: ["A fully developed language", "A simplified contact language", "A dialect", "A standard variety"], a: 1,
+     expl: "A pidgin is a simplified language created for communication between groups without a common language."},
+
+    {q: "What is a creole?", type: "mc", opts: ["A pidgin that became native", "Only a dialect", "Only a standard language", "Only slang"], a: 0,
+     expl: "A creole develops when a pidgin becomes a native language for a community."},
+
+    {q: "What is a speech community?", type: "mc", opts: ["A group sharing a language and norms", "Only a country", "Only a school", "Only online chats"], a: 0,
+     expl: "A speech community shares language norms and communicative practices."},
+
+    {q: "What is an example of a speech community?", type: "mc", opts: ["A group of gamers using slang", "Only people in one city", "Only formal speakers", "Only written language"], a: 0,
+     expl: "Gamers using shared slang form a speech community with its own norms."},
+
+    {q: "What is sociolinguistic competence?", type: "mc", opts: ["Knowing grammar only", "Knowing how to use language appropriately in society", "Only vocabulary", "Only pronunciation"], a: 1,
+     expl: "Sociolinguistic competence is knowing how to use language correctly in different social contexts."},
+
+    {q: "What is pragmatics?", type: "mc", opts: ["Study of meaning in context", "Study of sounds", "Study of word formation", "Study of grammar only"], a: 0,
+     expl: "Pragmatics studies how meaning changes based on context and social situation."},
+
+    {q: "What is politeness strategy in language?", type: "mc", opts: ["A grammar rule", "A way to show respect and maintain social harmony", "Only slang", "Only dialect"], a: 1,
+     expl: "Politeness strategies help maintain respect and social harmony, such as using indirect requests."},
+
+    {q: "Which is an example of an indirect request?", type: "mc", opts: ["Do this!", "Would you mind…?", "Shut up!", "Give me that"], a: 1,
+     expl: "Indirect requests are polite and less direct, like 'Would you mind…?'."},
+
+    {q: "What is the relationship between language and identity?", type: "mc", opts: ["Language doesn’t affect identity", "Language helps form social identity", "Only grammar forms identity", "Only writing forms identity"], a: 1,
+     expl: "Language expresses and shapes identity through choice of dialect, accent, and style."},
+
+    {q: "What is linguistic relativism?", type: "mc", opts: ["Language determines thought completely", "Language influences thought and perception", "Language has no effect on thought", "Language is only grammar"], a: 1,
+     expl: "Linguistic relativism suggests language influences how we perceive and think about the world."},
+
+    {q: "What is the Sapir-Whorf hypothesis?", type: "mc", opts: ["Language influences perception of reality", "Language is only for communication", "Only grammar matters", "Only phonetics matters"], a: 0,
+     expl: "The Sapir-Whorf hypothesis argues that language influences how we think and perceive reality."},
+
+    {q: "What is the difference between accent and dialect?", type: "mc", opts: ["Accent includes vocabulary changes", "Accent is pronunciation only; dialect includes grammar and vocabulary", "Dialect is only pronunciation", "Accent is a language"], a: 1,
+     expl: "Accent refers to pronunciation, while dialect includes pronunciation, vocabulary, and grammar."},
+
+    {q: "What is linguistic variation?", type: "mc", opts: ["Only grammar rules", "Differences in language use across groups or contexts", "Only standard language", "Only written language"], a: 1,
+     expl: "Linguistic variation includes differences by region, social class, age, gender, etc."},
+
+    {q: "Which factor influences linguistic variation?", type: "mc", opts: ["Only geography", "Social class, age, gender, region, context", "Only grammar", "Only writing"], a: 1,
+     expl: "Variation is influenced by many factors: region, social class, age, gender, context, etc."},
+
+    {q: "What is an example of age-based variation?", type: "mc", opts: ["Young people using slang", "Only old people speaking", "Only formal speech", "Only written rules"], a: 0,
+     expl: "Young people often introduce new slang and expressions, showing age-based variation."},
+
+    {q: "What is a sociolinguistic interview?", type: "mc", opts: ["A grammar test", "A method to study language use in social context", "Only written exam", "Only vocabulary test"], a: 1,
+     expl: "A sociolinguistic interview collects natural speech to study language variation and social factors."},
+
+    {q: "What is a corpus in linguistics?", type: "mc", opts: ["A dictionary", "A collection of texts for analysis", "A slang dictionary", "A grammar book"], a: 1,
+     expl: "A corpus is a structured collection of texts used for linguistic analysis."},
+
+    {q: "What is discourse analysis?", type: "mc", opts: ["Study of isolated words", "Study of language in use and social meaning", "Only phonetics", "Only grammar"], a: 1,
+     expl: "Discourse analysis studies how language is used in communication and how it constructs social meaning."},
+
+    {q: "What is conversational analysis?", type: "mc", opts: ["Study of grammar rules", "Study of structure of conversation", "Only writing", "Only pronunciation"], a: 1,
+     expl: "Conversational analysis studies turn-taking, repair, and structure of spoken interaction."},
+
+    {q: "What is a speech act?", type: "mc", opts: ["Only a word", "An action performed through language", "Only grammar", "Only writing"], a: 1,
+     expl: "A speech act is an action like requesting, promising, or apologizing performed through language."},
+
+    {q: "Which is an example of a speech act?", type: "mc", opts: ["Asking a question", "Only writing", "Only grammar", "Only pronunciation"], a: 0,
+     expl: "Asking a question is a speech act because it performs the action of requesting information."},
+
+    {q: "What is a linguistic norm?", type: "mc", opts: ["Random usage", "Accepted rules and patterns in a community", "Only slang", "Only dialect"], a: 1,
+     expl: "Norms are socially accepted patterns of language use in a community."},
+
+    {q: "What is language standardization?", type: "mc", opts: ["Random change", "Process of developing and fixing norms", "Only slang creation", "Only dialect formation"], a: 1,
+     expl: "Standardization is the process of codifying and fixing grammar, spelling, and pronunciation norms."},
+
+    {q: "What is prestige language?", type: "mc", opts: ["Language with high social status", "Only dialect", "Only slang", "Only formal writing"], a: 0,
+     expl: "Prestige language is a variety associated with higher social status and power."},
+
+    {q: "What is linguistic insecurity?", type: "mc", opts: ["Confidence in dialect", "Feeling uncertain about one’s language", "Only grammar knowledge", "Only pronunciation"], a: 1,
+     expl: "Linguistic insecurity is when speakers feel their language is inferior or incorrect."},
+
+    {q: "What is a language policy?", type: "mc", opts: ["Official rules about language use", "Only grammar rules", "Only slang", "Only pronunciation"], a: 0,
+     expl: "Language policy includes official decisions about language use in education, government, and media."},
+
+    {q: "What is bilingual education?", type: "mc", opts: ["Teaching in two languages", "Teaching only grammar", "Teaching only dialect", "Teaching only slang"], a: 0,
+     expl: "Bilingual education uses two languages in instruction to support language learning and preservation."},
+
+    {q: "What is language revitalization?", type: "mc", opts: ["Reviving endangered languages", "Replacing a language", "Only writing rules", "Only grammar"], a: 0,
+     expl: "Language revitalization involves efforts to revive and strengthen endangered languages."},
+
+    {q: "What is an endangered language?", type: "mc", opts: ["A language with many speakers", "A language at risk of disappearing", "Only dialect", "Only standard language"], a: 1,
+     expl: "An endangered language is at risk of being lost as fewer people speak it."},
+
+    {q: "What is a speech style?", type: "mc", opts: ["A fixed dialect", "A situational variety of language", "Only writing", "Only grammar"], a: 1,
+     expl: "Speech style is a variety used in a particular situation, such as formal or informal."},
+
+    {q: "What is linguistic accommodation?", type: "mc", opts: ["Adjusting language to match others", "Refusing to change speech", "Only dialect use", "Only grammar"], a: 0,
+     expl: "Accommodation is adjusting speech to match the listener or context for social approval."},
+
+    {q: "What is divergence in accommodation?", type: "mc", opts: ["Moving language closer to others", "Moving language away from others", "Only grammar", "Only writing"], a: 1,
+     expl: "Divergence is deliberately making speech different to emphasize identity or distance."},
+
+    {q: "What is convergence in accommodation?", type: "mc", opts: ["Moving language closer to others", "Moving language away from others", "Only grammar", "Only writing"], a: 0,
+     expl: "Convergence is adapting speech to become more similar to the interlocutor."},
+
+    {q: "What is a social network in sociolinguistics?", type: "mc", opts: ["A social media platform", "A group of social relationships influencing language", "Only grammar", "Only pronunciation"], a: 1,
+     expl: "Social networks are relationships (family, friends, colleagues) that influence language use."},
+
+    {q: "What is a dense social network?", type: "mc", opts: ["Many interconnected relationships", "Only one relationship", "Only online", "Only formal"], a: 0,
+     expl: "A dense network has many overlapping connections, often reinforcing local speech norms."},
+
+    {q: "What is a loose social network?", type: "mc", opts: ["Few connections", "Many connections", "Only formal", "Only informal"], a: 0,
+     expl: "A loose network has fewer overlapping ties and more diverse influences on language."},
+
+    {q: "What is a speech community norm?", type: "mc", opts: ["Only grammar rules", "Shared expectations of language use", "Only vocabulary", "Only pronunciation"], a: 1,
+     expl: "Speech community norms are shared expectations about acceptable language behavior."},
+
+    {q: "What is an example of a norm in a speech community?", type: "mc", opts: ["Using slang among friends", "Only formal speech", "Only written language", "Only grammar"], a: 0,
+     expl: "Using slang can be a norm in informal speech communities."},
+
+    {q: "What is language shift often caused by?", type: "mc", opts: ["Social pressure and economic power", "Only grammar", "Only writing", "Only phonetics"], a: 0,
+     expl: "Language shift often results from social pressure, economic power, and prestige of another language."},
+
+    {q: "What is language death?", type: "mc", opts: ["A language with many speakers", "A language no longer spoken", "Only a dialect", "Only a standard language"], a: 1,
+     expl: "Language death occurs when a language loses all its speakers."},
+
+    {q: "What is a pidgin vs creole difference?", type: "mc", opts: ["Pidgin is native; creole is simplified", "Pidgin is simplified; creole is native", "Both are same", "Both are dialects"], a: 1,
+     expl: "A pidgin is simplified contact language; a creole becomes a native language."},
+
+    {q: "What is 'diglossia' best described as?", type: "mc", opts: ["Two languages in one country", "High vs low variety used in different contexts", "Only slang", "Only standard language"], a: 1,
+     expl: "Diglossia is when two varieties have different functions (formal vs informal)."},
+
+    {q: "What is the main idea of sociolinguistic competence?", type: "mc", opts: ["Knowing grammar only", "Knowing social rules of language use", "Knowing vocabulary only", "Knowing pronunciation only"], a: 1,
+     expl: "Sociolinguistic competence is knowing how to use language appropriately in different social contexts."},
+
+    {q: "What is a lingua franca used for?", type: "mc", opts: ["Only local communication", "International communication between non-native speakers", "Only formal speech", "Only in schools"], a: 1,
+     expl: "A lingua franca is used for communication between speakers of different native languages."},
+
+    {q: "Which is an example of language planning after independence?", type: "mc", opts: ["Promoting national language", "Only dialect usage", "Only slang creation", "Only standard grammar"], a: 0,
+     expl: "After independence, states often promote national language to strengthen identity and reduce colonial influence."},
+
+    {q: "What is a 'standardization' process?", type: "mc", opts: ["Creating grammar and spelling norms", "Creating slang", "Only changing pronunciation", "Only changing vocabulary"], a: 0,
+     expl: "Standardization involves codifying grammar, spelling, and pronunciation for official use."},
+
+    {q: "What is an example of language ideology?", type: "mc", opts: ["Belief that standard language is superior", "Belief that all languages are equal", "Only grammar rules", "Only phonetics"], a: 0,
+     expl: "Language ideology includes beliefs about the value or superiority of certain varieties."},
+
+    {q: "What is 'linguistic prestige'?", type: "mc", opts: ["Social value of a language variety", "Only pronunciation quality", "Only vocabulary size", "Only grammar correctness"], a: 0,
+     expl: "Prestige is social value attached to a variety, often linked to power and education."},
+
+    {q: "What is 'linguistic insecurity'?", type: "mc", opts: ["Confidence in speech", "Feeling your language is inferior", "Only grammar knowledge", "Only vocabulary"], a: 1,
+     expl: "Linguistic insecurity is feeling unsure or ashamed of one’s language variety."},
+
+    {q: "What is 'code-mixing'?", type: "mc", opts: ["Using elements of two languages together", "Only switching dialects", "Only grammar rules", "Only formal speech"], a: 0,
+     expl: "Code-mixing involves mixing vocabulary and grammar from different languages in one utterance."},
+
+    {q: "What is 'register'?", type: "mc", opts: ["Language variety based on context", "Only dialect", "Only accent", "Only grammar"], a: 0,
+     expl: "Register is a style of language used in a particular context (formal, informal, technical, etc.)."},
+
+    {q: "What is an example of technical register?", type: "mc", opts: ["Medical terminology", "Slang chat", "Poetry", "Everyday speech"], a: 0,
+     expl: "Technical register includes specialized vocabulary for a field, like medicine."},
+
+    {q: "What is an example of sociolinguistic variation?", type: "mc", opts: ["Different accents in a region", "One standard pronunciation everywhere", "Only written rules", "Only grammar textbooks"], a: 0,
+     expl: "Variation includes differences in accent, vocabulary, and grammar across social groups."},
+
+    {q: "What is a speech act theory about?", type: "mc", opts: ["Meaning in context", "Actions performed through language", "Only grammar rules", "Only phonetics"], a: 1,
+     expl: "Speech act theory studies how utterances perform actions like requesting, promising, or apologizing."},
+
+    {q: "What is 'pragmatics'?", type: "mc", opts: ["Study of meaning in context", "Study of sounds", "Study of word formation", "Study of grammar only"], a: 0,
+     expl: "Pragmatics studies meaning based on context, social situation, and speaker intention."},
+
+    {q: "What is 'discourse analysis'?", type: "mc", opts: ["Study of language in use and social meaning", "Study of phonetics only", "Study of grammar only", "Study of spelling"], a: 0,
+     expl: "Discourse analysis studies how language creates social meaning in communication."},
+
+    {q: "What is 'conversational analysis'?", type: "mc", opts: ["Study of conversation structure", "Study of writing", "Study of grammar only", "Study of vocabulary"], a: 0,
+     expl: "Conversational analysis studies turn-taking, repair, and structure of spoken interaction."},
+
+    {q: "What is a 'speech community'?", type: "mc", opts: ["A group sharing language norms", "A single person", "Only a country", "Only a school"], a: 0,
+     expl: "A speech community shares language norms and communicative practices."},
+
+    {q: "What is a 'language corpus'?", type: "mc", opts: ["A collection of texts for analysis", "A dictionary", "A grammar book", "A slang list"], a: 0,
+     expl: "A corpus is a structured collection of texts used for linguistic analysis."},
+
+    {q: "What is 'language ecology'?", type: "mc", opts: ["Study of language in its environment", "Study of grammar only", "Study of phonetics only", "Study of vocabulary only"], a: 0,
+     expl: "Language ecology studies how languages interact with social and cultural environments."},
+
+    {q: "What is a 'language shift'?", type: "mc", opts: ["Community replacing one language with another", "Learning a new language", "Only dialect change", "Only slang"], a: 0,
+     expl: "Language shift is when a community gradually switches to another language."},
+
+    {q: "What is 'language maintenance'?", type: "mc", opts: ["Efforts to preserve a language", "Replacing a language", "Only grammar learning", "Only writing"], a: 0,
+     expl: "Language maintenance is efforts to keep a language alive in a community."},
+
+    {q: "What is 'language revitalization'?", type: "mc", opts: ["Reviving endangered languages", "Creating new slang", "Only grammar", "Only phonetics"], a: 0,
+     expl: "Language revitalization involves activities to revive endangered languages."},
+
+    {q: "What is 'linguistic discrimination'?", type: "mc", opts: ["Unfair treatment based on language", "Learning languages", "Only grammar tests", "Only phonetics"], a: 0,
+     expl: "Linguistic discrimination is treating people unfairly due to their language or accent."},
+
+    {q: "What is 'language ideology'?", type: "mc", opts: ["Beliefs about language value and role", "A dialect", "A grammar rule", "A phonetic rule"], a: 0,
+     expl: "Language ideology includes beliefs and attitudes about language and social power."},
+
+    {q: "What is 'social prestige' in language?", type: "mc", opts: ["Social value attached to a variety", "Only grammar correctness", "Only pronunciation", "Only vocabulary"], a: 0,
+     expl: "Social prestige is the status given to a variety based on social power and education."},
+
+    {q: "What is a 'standard language' used for?", type: "mc", opts: ["Formal communication in education and government", "Only slang", "Only dialect", "Only informal speech"], a: 0,
+     expl: "Standard language is used in formal contexts like education, government, and media."},
+
+    {q: "What is 'dialect'?", type: "mc", opts: ["A regional or social variety of a language", "A standard language", "Only slang", "Only a written form"], a: 0,
+     expl: "A dialect is a regional or social variety with unique pronunciation, vocabulary, and grammar."},
+
+    {q: "What is 'contact language'?", type: "mc", opts: ["Language formed through contact between different languages", "Only formal speech", "Only standard language", "Only dialect"], a: 0,
+     expl: "Contact languages arise in situations of trade, migration, or colonization where languages influence each other."},
+
+    {q: "What is 'code-switching'?", type: "mc", opts: ["Switching between languages or varieties", "Only grammar rules", "Only pronunciation", "Only writing"], a: 0,
+     expl: "Code-switching is alternating between languages or varieties in conversation."},
+
+    {q: "What is 'language planning'?", type: "mc", opts: ["Deliberate government efforts to influence language use", "Random language change", "Only slang creation", "Only dialect formation"], a: 0,
+     expl: "Language planning includes official decisions about language norms, official status, and preservation."},
+
+    {q: "What is 'language standardization'?", type: "mc", opts: ["Codifying grammar and spelling norms", "Only slang", "Only pronunciation", "Only vocabulary"], a: 0,
+     expl: "Standardization is the process of fixing norms for grammar, spelling, and pronunciation."},
+
+    {q: "What is 'bilingualism'?", type: "mc", opts: ["Ability to use two languages", "Ability to use one language", "Only dialects", "Only formal speech"], a: 0,
+     expl: "Bilingualism is using two languages, either by an individual or community."},
+
+    {q: "What is 'multilingualism'?", type: "mc", opts: ["Ability to use multiple languages", "Ability to use one language", "Only dialects", "Only slang"], a: 0,
+     expl: "Multilingualism is the use of more than two languages."},
+
+    {q: "What is 'diglossia'?", type: "mc", opts: ["Two varieties used for different functions", "Only one language", "Only dialect", "Only slang"], a: 0,
+     expl: "Diglossia involves a high variety for formal contexts and a low variety for informal contexts."},
+
+    {q: "What is a 'speech act'?", type: "mc", opts: ["An action performed through language", "Only grammar rules", "Only vocabulary", "Only pronunciation"], a: 0,
+     expl: "Speech acts include requesting, promising, apologizing—actions performed by speaking."},
+
+    {q: "What is 'pragmatics'?", type: "mc", opts: ["Study of meaning in context", "Study of phonetics", "Study of grammar", "Study of vocabulary"], a: 0,
+     expl: "Pragmatics studies how meaning is shaped by context and social situation."},
+
+    {q: "What is 'discourse analysis'?", type: "mc", opts: ["Study of language in use", "Study of sounds", "Study of grammar only", "Study of vocabulary only"], a: 0,
+     expl: "Discourse analysis studies how language creates meaning in communication."},
+
+    {q: "What is 'conversational analysis'?", type: "mc", opts: ["Study of conversation structure", "Study of grammar", "Study of spelling", "Study of vocabulary"], a: 0,
+     expl: "Conversational analysis studies turn-taking, repair, and interaction patterns."},
+
+    {q: "What is 'linguistic variation'?", type: "mc", opts: ["Differences in language across social groups", "Only grammar", "Only writing", "Only pronunciation"], a: 0,
+     expl: "Linguistic variation includes differences by region, class, age, gender, and context."},
+
+    {q: "What is 'accent'?", type: "mc", opts: ["Pronunciation differences", "Vocabulary differences", "Grammar differences", "Only writing"], a: 0,
+     expl: "Accent refers to pronunciation differences among speakers."},
+
+    {q: "What is 'register'?", type: "mc", opts: ["Style of language based on context", "A dialect", "A language", "A standard variety"], a: 0,
+     expl: "Register is a style used in specific contexts, like formal or informal speech."},
+
+    {q: "What is 'language ideology'?", type: "mc", opts: ["Beliefs about language and power", "Only grammar rules", "Only phonetics", "Only vocabulary"], a: 0,
+     expl: "Language ideology includes beliefs about the value and role of language varieties in society."},
+
+    {q: "What is 'social prestige'?", type: "mc", opts: ["Social status of a language variety", "Only grammar correctness", "Only pronunciation", "Only vocabulary"], a: 0,
+     expl: "Social prestige is the status attached to a variety, often tied to power and education."},
+
+    {q: "What is 'linguistic discrimination'?", type: "mc", opts: ["Unfair treatment based on language", "Learning a language", "Only grammar tests", "Only phonetics"], a: 0,
+     expl: "Linguistic discrimination is treating people unfairly because of their language or accent."},
+
+    {q: "What is 'language planning'?", type: "mc", opts: ["Deliberate language regulation", "Random language change", "Only dialect", "Only slang"], a: 0,
+     expl: "Language planning involves government decisions about official language, norms, and preservation."},
+
+    {q: "What is 'language standardization'?", type: "mc", opts: ["Codifying norms", "Only slang", "Only dialect", "Only pronunciation"], a: 0,
+     expl: "Standardization fixes grammar, spelling, and pronunciation norms for official use."},
+
+    {q: "What is 'language shift'?", type: "mc", opts: ["Replacing one language with another", "Learning a new language", "Only dialect change", "Only slang"], a: 0,
+     expl: "Language shift occurs when a community switches from one language to another."},
+
+    {q: "What is 'language maintenance'?", type: "mc", opts: ["Efforts to preserve a language", "Replacing a language", "Only grammar", "Only vocabulary"], a: 0,
+     expl: "Language maintenance is keeping a language alive within a community."},
+
+    {q: "What is 'language revitalization'?", type: "mc", opts: ["Reviving endangered languages", "Only grammar", "Only pronunciation", "Only writing"], a: 0,
+     expl: "Language revitalization involves efforts to revive endangered languages."},
+
+    {q: "What is 'language death'?", type: "mc", opts: ["A language no longer spoken", "A language with many speakers", "Only dialect", "Only standard"], a: 0,
+     expl: "Language death happens when no speakers remain."},
+
+    {q: "What is 'code-switching'?", type: "mc", opts: ["Switching between languages or varieties", "Only grammar", "Only writing", "Only pronunciation"], a: 0,
+     expl: "Code-switching is alternating between languages or varieties in conversation."},
+
+    {q: "What is 'code-mixing'?", type: "mc", opts: ["Mixing elements of languages in one utterance", "Only dialect", "Only slang", "Only standard"], a: 0,
+     expl: "Code-mixing mixes vocabulary and grammar from different languages."},
+
+    {q: "What is 'diglossia'?", type: "mc", opts: ["High vs low variety used for different functions", "Only one language", "Only slang", "Only dialect"], a: 0,
+     expl: "Diglossia involves high (formal) and low (informal) varieties in a society."},
+
+    {q: "What is 'speech community'?", type: "mc", opts: ["Group sharing language norms", "Only one person", "Only a city", "Only a school"], a: 0,
+     expl: "Speech communities share norms of language use and communication."},
+
+    {q: "What is 'sociolinguistic competence'?", type: "mc", opts: ["Ability to use language appropriately in society", "Only grammar", "Only vocabulary", "Only pronunciation"], a: 0,
+     expl: "Sociolinguistic competence is knowing how to use language properly in social contexts."},
+
+    {q: "What is 'pragmatics'?", type: "mc", opts: ["Meaning in context", "Grammar rules", "Phonetics", "Vocabulary"], a: 0,
+     expl: "Pragmatics studies how context affects meaning and interpretation."},
+
+    {q: "What is 'discourse analysis'?", type: "mc", opts: ["Study of language in use", "Study of phonetics", "Study of grammar", "Study of spelling"], a: 0,
+     expl: "Discourse analysis studies how language is used to create meaning in communication."},
+
+    {q: "What is 'conversational analysis'?", type: "mc", opts: ["Study of conversation structure", "Study of grammar", "Study of spelling", "Study of vocabulary"], a: 0,
+     expl: "Conversational analysis studies how people take turns, repair, and organize conversation."},
+
+    {q: "What is 'language ideology'?", type: "mc", opts: ["Beliefs about language and power", "Only grammar", "Only phonetics", "Only vocabulary"], a: 0,
+     expl: "Language ideology is about beliefs and attitudes toward language varieties."},
+
+    {q: "What is 'social prestige'?", type: "mc", opts: ["Social value attached to a variety", "Only grammar", "Only pronunciation", "Only vocabulary"], a: 0,
+     expl: "Prestige is the status given to a variety based on social power and education."},
+
+    {q: "What is 'linguistic discrimination'?", type: "mc", opts: ["Unfair treatment based on language", "Learning languages", "Only grammar tests", "Only phonetics"], a: 0,
+     expl: "Linguistic discrimination is unfair treatment because of language or accent."},
+
+    {q: "What is 'language planning'?", type: "mc", opts: ["Government regulation of language", "Random change", "Only dialect", "Only slang"], a: 0,
+     expl: "Language planning involves official decisions about language norms and use."},
+
+    {q: "What is 'standardization'?", type: "mc", opts: ["Fixing norms for language", "Only slang", "Only dialect", "Only pronunciation"], a: 0,
+     expl: "Standardization codifies grammar, spelling, and pronunciation for official use."},
+
+    {q: "What is 'linguistic insecurity'?", type: "mc", opts: ["Feeling language is inferior", "Confidence in language", "Only grammar", "Only vocabulary"], a: 0,
+     expl: "Linguistic insecurity is feeling ashamed or uncertain about one’s language variety."},
+
+    {q: "What is 'code-switching'?", type: "mc", opts: ["Switching languages in conversation", "Only grammar", "Only writing", "Only pronunciation"], a: 0,
+     expl: "Code-switching is alternating between languages or varieties."},
+
+    {q: "What is 'language shift'?", type: "mc", opts: ["Community changing language", "Learning a new language", "Only dialect change", "Only slang"], a: 0,
+     expl: "Language shift is replacing one language with another in a community."},
+
+    {q: "What is 'language maintenance'?", type: "mc", opts: ["Preserving a language", "Replacing a language", "Only grammar", "Only vocabulary"], a: 0,
+     expl: "Language maintenance involves preserving a language within a community."},
+
+    {q: "What is 'language revitalization'?", type: "mc", opts: ["Reviving endangered languages", "Creating slang", "Only grammar", "Only phonetics"], a: 0,
+     expl: "Revitalization includes efforts to revive and strengthen endangered languages."},
+
+    {q: "What is 'lingua franca'?", type: "mc", opts: ["Common language for communication between different native speakers", "A dialect", "A standard language", "A slang"], a: 0,
+     expl: "A lingua franca is a common language used between speakers of different native languages."},
+
+    {q: "What is 'contact language'?", type: "mc", opts: ["Language developed through contact", "Only formal speech", "Only standard language", "Only dialect"], a: 0,
+     expl: "Contact languages develop where different language speakers interact regularly."},
+
+    {q: "What is 'pidgin'?", type: "mc", opts: ["Simplified contact language", "A standard language", "A dialect", "A formal register"], a: 0,
+     expl: "A pidgin is a simplified language formed for communication between groups without a common language."},
+
+    {q: "What is 'creole'?", type: "mc", opts: ["Pidgin that becomes native", "A dialect", "A standard language", "A formal register"], a: 0,
+     expl: "A creole develops when a pidgin becomes a native language for a community."},
+
+    {q: "What is 'accent'?", type: "mc", opts: ["Pronunciation differences", "Grammar differences", "Vocabulary differences", "Writing differences"], a: 0,
+     expl: "Accent refers to pronunciation differences among speakers."},
+
+    {q: "What is 'dialect'?", type: "mc", opts: ["Regional or social variety", "A standard language", "A slang", "A writing system"], a: 0,
+     expl: "A dialect includes pronunciation, vocabulary, and grammar differences."},
+
+    {q: "What is 'standard language'?", type: "mc", opts: ["Codified variety used in formal contexts", "A dialect", "A slang", "A pidgin"], a: 0,
+     expl: "Standard language is codified and used in education, government, and media."},
+
+    {q: "What is 'language ideology'?", type: "mc", opts: ["Beliefs about language value and role", "Only grammar", "Only phonetics", "Only vocabulary"], a: 0,
+     expl: "Language ideology includes beliefs and attitudes about language varieties and social power."},
+
+    {q: "What is 'sociolinguistics'?", type: "mc", opts: ["Study of language in social context", "Study of grammar only", "Study of phonetics only", "Study of vocabulary only"], a: 0,
+     expl: "Sociolinguistics studies how language and society influence each other."}
+];
+
+// 5 fill-in definition questions
+const fillQuestions = [
+    {q: "Define **dialect**.", answers: ["a regional or social variety of a language", "regional variety of a language", "social variety of a language"], expl: "A dialect is a regional or social variety of a language differing in pronunciation, vocabulary, and sometimes grammar."},
+    {q: "Define **standard language**.", answers: ["a codified socially accepted variety", "codified standard variety", "socially accepted variety"], expl: "A standard language is codified and used in education, government, and formal communication."},
+    {q: "Define **lingua franca**.", answers: ["a common language for communication between speakers of different native languages", "common language between different native speakers"], expl: "A lingua franca is used as a common means of communication between speakers who have different native languages."},
+    {q: "Define **code-switching**.", answers: ["switching between languages or varieties in conversation", "alternating between languages in conversation"], expl: "Code-switching is alternating between languages or varieties within a conversation."},
+    {q: "Define **language planning**.", answers: ["deliberate efforts to influence language use by governments or institutions", "government efforts to regulate language", "official regulation of language"], expl: "Language planning is deliberate efforts by governments or institutions to influence how a language is used, developed, or preserved."}
+];
+
+let allQuestions = [];
+let currentIndex = 0;
+let correctCount = 0;
+let answeredCount = 0;
+
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+}
+
+function init() {
+    // Combine MC and fill questions, shuffle
+    allQuestions = questions.map(q => ({...q, type:"mc"}))
+        .concat(fillQuestions.map(q => ({...q, type:"fill"})));
+    shuffle(allQuestions);
+
+    document.getElementById("total").textContent = allQuestions.length;
+    renderQuestion();
+}
+
+function renderQuestion() {
+    const q = allQuestions[currentIndex];
+    document.getElementById("question").innerHTML = q.q;
+    document.getElementById("explanation").innerHTML = "";
+    document.getElementById("nextBtn").disabled = true;
+
+    if (q.type === "mc") {
+        document.getElementById("fillArea").style.display = "none";
+        const answersEl = document.getElementById("answers");
+        answersEl.innerHTML = "";
+
+        const opts = [...q.opts];
+        shuffle(opts);
+
+        opts.forEach((opt, idx) => {
+            const li = document.createElement("li");
+            const btn = document.createElement("button");
+            btn.className = "option";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(opt, q);
+            li.appendChild(btn);
+            answersEl.appendChild(li);
+        });
+    } else {
+        document.getElementById("answers").innerHTML = "";
+        document.getElementById("fillArea").style.display = "block";
+        document.getElementById("fillInput").value = "";
+        document.getElementById("fillCheck").onclick = () => checkFill(q);
+    }
+
+    updateProgress();
+}
+
+function checkAnswer(selected, q) {
+    const options = document.querySelectorAll(".option");
+    options.forEach(btn => btn.disabled = true);
+
+    const correctText = q.opts[q.a];
+    const isCorrect = selected === correctText;
+
+    options.forEach(btn => {
+        if (btn.innerText === correctText) btn.classList.add("correct");
+        if (btn.innerText === selected && !isCorrect) btn.classList.add("wrong");
+    });
+
+    answeredCount++;
+    if (isCorrect) correctCount++;
+    document.getElementById("explanation").innerHTML = q.expl;
+    document.getElementById("nextBtn").disabled = false;
+    updateStats();
+}
+
+function checkFill(q) {
+    const input = document.getElementById("fillInput").value.trim().toLowerCase();
+    const isCorrect = q.answers.some(ans => input.includes(ans.toLowerCase()));
+
+    answeredCount++;
+    if (isCorrect) correctCount++;
+
+    document.getElementById("explanation").innerHTML = q.expl;
+    document.getElementById("nextBtn").disabled = false;
+    updateStats();
+}
+
+function nextQuestion() {
+    currentIndex++;
+    if (currentIndex >= allQuestions.length) {
+        showResult();
+        return;
+    }
+    renderQuestion();
+}
+
+function updateStats() {
+    document.getElementById("answered").textContent = answeredCount;
+    document.getElementById("correct").textContent = correctCount;
+    updateProgress();
+}
+
+function updateProgress() {
+    const percent = (answeredCount / allQuestions.length) * 100;
+    document.getElementById("progress").style.width = percent + "%";
+}
+
+function showResult() {
+    document.getElementById("quiz").innerHTML = `
+        <h2>Test Completed!</h2>
+        <p>You answered <b>${correctCount}</b> out of <b>${allQuestions.length}</b> correctly.</p>
+        <p>Score: <b>${((correctCount / allQuestions.length) * 100).toFixed(1)}%</b></p>
+        <button class="btn btn-next" onclick="location.reload()">Retake Test</button>
+    `;
+}
+
+document.getElementById("nextBtn").onclick = nextQuestion;
+init();
+</script>
+
+</body>
+</html>
